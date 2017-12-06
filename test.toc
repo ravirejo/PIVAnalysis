@@ -1,0 +1,6 @@
+\contentsline {section}{\numberline {0.1}Aim}{1}{section.0.1}
+\contentsline {section}{\numberline {0.2}methodology}{1}{section.0.2}
+\contentsline {subsection}{\numberline {0.2.1}FFT}{1}{subsection.0.2.1}
+\contentsline {subsection}{\numberline {0.2.2}Spectogram}{1}{subsection.0.2.2}
+\contentsline {subsection}{\numberline {0.2.3}lineplots}{1}{subsection.0.2.3}
+\contentsline {section}{\numberline {0.3}Conclusion}{1}{section.0.3}

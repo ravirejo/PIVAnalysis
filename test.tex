@@ -1,0 +1,97 @@
+\documentclass[11pt]{report}
+
+\usepackage{fullpage}
+%\usepackage[top=1in, bottom=1in]{geometry}
+\usepackage{amsfonts}
+%for math symbols, Ex: \mathbb{N}
+\def\Definition{what does something mean}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+
+\begin{document}
+
+\title{PIV Analysis}
+\author{Raghuvir reddy Jonnagiri}
+\date{\today}
+\maketitle
+\thispagestyle{empty}
+\clearpage
+
+\tableofcontents
+\thispagestyle{empty}
+\clearpage
+
+Hey there \hypertarget{label1}{!}
+This is my \LaTeX \  report on PIV data analysis.\\
+How do we start it?
+
+Do math formula like this $(x+1)$
+if you want it seperately $$(x+1)$$
+
+for fraction use this $\displaystyle{\frac{2}{3}}$
+
+sample table 
+\begin{tabular}{|c|c|c|c|}
+\hline
+$input$ & 1 & 2 & 3 \\
+\hline
+\end{tabular} \\
+
+Definition:\Definition
+
+\begin{eqnarray*}
+\frac{dy}{dx}&=&x^2 \\
+f(y)&=&x^3/3
+\end{eqnarray*}
+
+\begin{enumerate}
+\item First
+\item Second
+	\begin{itemize}
+	\item blah
+	\item blahblah
+	\end{itemize}
+\item[random] BLAH
+\end{enumerate}
+
+\textit{ooh...fancy}
+
+\begin{Large}WHY ARE YOU READING THIS IN A LOUD VOICE?!..JEEEZ....\end{Large}
+
+\begin{flushleft}
+this is a bit too leftish\footnote{or is it}
+\end{flushleft}
+\clearpage
+\setcounter{page}{1}
+
+\section{Aim}
+\section{methodology}
+	\subsection{FFT}
+	\subsection{Spectogram}
+	\subsection{lineplots}
+\section{Conclusion}
+\clearpage
+\begin{figure}
+	\centering
+	\includegraphics[width=5in]{sample.png}
+	\caption{THIS IS A SAMPLE IMAGE}
+	\label{fig:sample}
+\end{figure}
+
+How does that figure \ref{fig:sample} look \cite{ref1}?
+
+You want to go back? Click \hyperlink{label}{here}
+\clearpage
+
+\begin{thebibliography}{}
+
+\bibitem{ref1}
+JRR,
+Lord of the Rings,
+1800 A.D.,
+
+
+\end{thebibliography}
+
+\end{document}
+

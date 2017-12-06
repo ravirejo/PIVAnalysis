@@ -1,0 +1,350 @@
+%\usepackage{listings}
+
+\chapter{Appendix}
+%\newpage
+%\appendix
+%\section{Appendix:Python code}
+
+\begin{lstlisting}[language=Python]
+'''
+@author: Raghuvir reddy Jonnagiri
+project: PIV Data Analysis - supersonic jet from circular nozzle
+'''
+
+import numpy as np
+import matplotlib
+from matplotlib import pyplot
+from timeit import default_timer as timer
+from matplotlib import colors
+from numpy import abs
+from scipy import signal
+from numpy import fft
+
+TRPR = np.array([[3.0,3.6]]) # temperature ratio, pressure ratio 
+dia = 0.813*25.4 # converting exit diameter from inches to mm
+
+NTR = TRPR[0,0]; ntr  = str(int(NTR))+'p'+str(int((NTR%1)*10))# for naming output files
+NPR = TRPR[0,1]; npr  = str(int(NPR))+'p'+str(int((NPR%1)*10))
+
+print('working on NTR : '+ntr+' and NPR : '+npr)
+
+try : 
+    Vx1 = np.genfromtxt('B00001down_'+ntr+'_'+npr+'.dat',skip_header=3, invalid_raise=False)
+    Vx2 = np.genfromtxt('B00001up_'+ntr+'_'+npr+'.dat',skip_header=3, invalid_raise=False)
+    TKE1 = np.genfromtxt('B00004down_'+ntr+'_'+npr+'.dat',skip_header=3, invalid_raise=False)
+    TKE2 = np.genfromtxt('B00004up_'+ntr+'_'+npr+'.dat',skip_header=3, invalid_raise=False)
+    Vy1 = np.genfromtxt('B00002down_'+ntr+'_'+npr+'.dat',skip_header=3, invalid_raise=False)
+    Vy2 = np.genfromtxt('B00002up_'+ntr+'_'+npr+'.dat',skip_header=3, invalid_raise=False)
+except IOError :
+    print('Please check the name format. Ex : BOOO1up_1.0_3.6 where 1.0 is ntr & 3.6 is npr')
+    exit()
+
+# Correcting the positions of images manually before merging
+Vx1[22360:,0] =  Vx1[22360:,0] + Vx1[22359,0] - Vx1[0,0] -10
+Vx2[:22360,0] =  Vx2[:22360,0] + Vx1[-1,0] - Vx1[0,0] - 9
+Vx2[22360:,0] =  Vx2[22360:,0] + Vx2[22359,0] - Vx1[0,0] -10
+Vx1[22360:,1] =  Vx1[22360:,1] - 1
+Vx2[:22360,1] =  Vx2[:22360,1] + 2.8
+Vx2[22360:,1] =  Vx2[22360:,1] + 1.8   
+
+TKE1[22360:,0] =  TKE1[22360:,0] + TKE1[22359,0] - TKE1[0,0] - 10
+TKE2[:22360,0] =  TKE2[:22360,0] + TKE1[-1,0] - TKE1[0,0] - 9
+TKE2[22360:,0] =  TKE2[22360:,0] + TKE2[22359,0] - TKE1[0,0] -10
+TKE1[22360:,1] =  TKE1[22360:,1] - 1
+TKE2[:22360,1] =  TKE2[:22360,1] + 2.8
+TKE2[22360:,1] =  TKE2[22360:,1] + 1.8
+
+Vy1[22360:,0] =  Vy1[22360:,0] + Vy1[22359,0] - Vy1[0,0] -10
+Vy2[:22360,0] =  Vy2[:22360,0] + Vy1[-1,0] - Vy1[0,0] - 9
+Vy2[22360:,0] =  Vy2[22360:,0] + Vy2[22359,0] - Vy1[0,0] -10
+Vy1[22360:,1] =  Vy1[22360:,1] - 1
+Vy2[:22360,1] =  Vy2[:22360,1] + 2.8
+Vy2[22360:,1] =  Vy2[22360:,1] + 1.8
+
+Vx = np.concatenate([Vx1,Vx2], axis=0)
+TKE = np.concatenate([TKE1,TKE2])
+Vy = np.concatenate([Vy1,Vy2], axis=0)
+
+Velmax = np.max(Vx[:,2])
+
+pyplot.figure(1)
+g = pyplot.figure(figsize=(30,24))
+g.clear()
+subplot1 = pyplot.subplot(2,1,1)
+subplot2 = pyplot.subplot(2,1,2)
+matplotlib.rcParams.update({'font.size': 25})
+#cm = matplotlib.cm.get_cmap('RdYlBu')
+
+X, Y, ZVx = Vx.T; X = X/dia; Y = Y/dia; ZVx = ZVx/Velmax ; # to plot centerlines
+dum = subplot1.scatter(X, Y, c = ZVx, cmap = pyplot.cm.jet,s=60); g.colorbar(dum, ax = subplot1,pad=0.015)
+subplot1.set_title('Vx magnitudes, Vx/Uj', fontsize = 30, y = 1.02  )  
+subplot1.set_xlabel('X-value, X/De', fontsize = 25);subplot1.set_ylabel('Y-value, Y/De', fontsize = 25)
+subplot1.margins(0.003) ; subplot1.tick_params(labelsize=20)
+subplot1.set_ylim([-1.5,1.5])
+      
+X, Y, Z = TKE.T; X = X/dia; Y = Y/dia; Z = Z/(Velmax**2.0)
+dum = subplot2.scatter(X, Y, c = np.power(Z,1), cmap = pyplot.cm.jet,s=60); g.colorbar(dum, ax = subplot2,pad=0.015)
+subplot2.set_title('TKE magnitudes, TKE/Uj^2', fontsize = 30, y=1.02 )  
+subplot2.set_xlabel('X-value, X/De', fontsize = 25);subplot2.set_ylabel('Y-value, Y/De', fontsize = 25)
+subplot2.margins(0.003) ; subplot2.tick_params(labelsize=20); subplot2.set_ylim([-1.5,1.5])
+g.suptitle('PIV data at NTR = '+str(NTR)+' and NPR = '+str(NPR), fontsize = 40, x = 0.47, y =0.95)
+pyplot.savefig('PIV_'+'NTR'+str(NTR)+'_NPR'+str(NPR)+'.png',bbox_inches = 'tight', pad_inches = 0.4)
+
+pyplot.figure(2); pyplot.clf()
+matplotlib.rcParams.update({'font.size': 6})
+X, Y, ZVy = Vy.T; X = X/dia; Y = Y/dia; ZVy = ZVy/(Velmax); ax1 = pyplot.gca();
+dum = pyplot.scatter(X, Y, c = np.power(ZVy,1), cmap = pyplot.cm.jet,s=60); pyplot.colorbar(dum, ax = ax1,pad=0.015)
+#pyplot.title('Vy magnitudes, Vy/Uj', fontsize = 15, y=1.02 )  
+pyplot.xlabel('X-value, X/De', fontsize = 8);pyplot.ylabel('Y-value, Y/De', fontsize = 8)
+pyplot.margins(0.003) ; subplot2.tick_params(labelsize=6); pyplot.ylim([-1.5,1.5])
+pyplot.title('Vy - PIV data at NTR = '+str(NTR)+' and NPR = '+str(NPR), fontsize = 10, x = 0.51, y =1.01)
+gcf1 = pyplot.gcf(); gcf1.set_size_inches(8,3)
+pyplot.savefig('PIV_Vy_'+'NTR'+str(NTR)+'_NPR'+str(NPR)+'.png',dpi=300,bbox_inches = 'tight')
+
+#centerline
+dummyc = (abs(0.05-Y)==np.min(abs(0.05-Y[0:22360]))) | (abs(0.05-Y)==np.min(abs(0.05-Y[22360:44720]))) | (abs(0.05-Y)==np.min(abs(0.05-Y[44720:67080]))) | (abs(0.05-Y)==np.min(abs(0.05-Y[67080:89438])))
+dummyc = dummyc & (Z>0.0001) #ignoring data with z value as 0
+
+#xlines is xvalues, zlines is tke values, vlines is velocity values
+Xlinesc = X[dummyc]; Zlinesc = Z[dummyc]; Vlinesc = ZVx[dummyc];Vylinesc = ZVy[dummyc]
+#correcting for smooth transition between images when merged
+for j in np.arange(Xlinesc.shape[0]-1):
+    if Xlinesc[j+1] < Xlinesc[j] :
+        Xlinesc[j+1] = Xlinesc[j]
+        Zlinesc[j+1] = Zlinesc[j]
+        Vlinesc[j+1] = Vlinesc[j]
+        Vylinesc[j+1] = Vylinesc[j]
+
+#upper line
+dummyu = (abs(0.55-Y)==np.min(abs(0.55-Y[0:22360]))) | (abs(0.55-Y)==np.min(abs(0.55-Y[22360:44720]))) | (abs(0.55-Y)==np.min(abs(0.55-Y[44720:67080]))) | (abs(0.55-Y)==np.min(abs(0.55-Y[67080:89438])))
+dummyu = dummyu & (Z>0.0001) #ignoring data with z value as 0
+
+Xlinesu = X[dummyu]; Zlinesu = Z[dummyu];Vlinesu = ZVx[dummyu];Vylinesu = ZVy[dummyu]
+#correcting for smooth transition between images when merged
+
+for j in np.arange(Xlinesu.shape[0]-1):
+    if Xlinesu[j+1] < Xlinesu[j] :
+        Xlinesu[j+1] = Xlinesu[j]
+        Zlinesu[j+1] = Zlinesu[j]
+        Vlinesu[j+1] = Vlinesu[j]
+        Vylinesu[j+1] = Vylinesu[j]
+     
+#lower line
+dummyl = (abs(-0.45-Y)==np.min(abs(-0.45-Y[0:22360]))) | (abs(-0.45-Y)==np.min(abs(-0.45-Y[22360:44720]))) | (abs(-0.45-Y)==np.min(abs(-0.45-Y[44720:67080]))) | (abs(-0.45-Y)==np.min(abs(-0.45-Y[67080:89438])))
+dummyl = dummyl & (Z>0.0001) #ignoring data with z value as 0
+
+Xlinesl = X[dummyl]; Zlinesl = Z[dummyl];Vlinesl = ZVx[dummyl];Vylinesl = ZVy[dummyl]
+#correcting for smooth transition between images when merged
+for j in np.arange(Xlinesl.shape[0]-1):
+    if Xlinesl[j+1] < Xlinesl[j] :
+        Xlinesl[j+1] = Xlinesl[j]
+        Zlinesl[j+1] = Zlinesl[j]  
+        Vlinesl[j+1] = Vlinesl[j]
+        Vylinesl[j+1] = Vylinesl[j]
+
+#upper max
+Z1 = Z[0:22360].reshape(130,172);         X1 = X[0:22360].reshape(130,172);
+Z2 = Z[22360:44720].reshape(130,172) ;    X2 = X[22360:44720].reshape(130,172) ;
+Z3 = Z[44720:67080].reshape(130,172);     X3 = X[44720:67080].reshape(130,172); 
+Z4 = Z[67080:89440].reshape(130,172) ;    X4 = X[67080:89440].reshape(130,172) ;
+ZVx1 = ZVx[0:22360].reshape(130,172);         
+ZVx2 = ZVx[22360:44720].reshape(130,172) ;    
+ZVx3 = ZVx[44720:67080].reshape(130,172);     
+ZVx4 = ZVx[67080:89440].reshape(130,172) ;   
+  
+Zcomplete = np.concatenate((Z1,Z2,Z3,Z4),axis=1); ZVxcomplete = np.concatenate((ZVx1,ZVx2,ZVx3,ZVx4),axis=1)
+Xcomplete = np.concatenate((X1,X2,X3,X4),axis=1)
+[Zcompleteu, Zcompletel] = np.vsplit(Zcomplete,2) ;[ZVxcompleteu, ZVxcompletel] = np.vsplit(ZVxcomplete,2)
+[Xcompleteu, Xcompletel] = np.vsplit(Xcomplete,2)
+Zmaxu = np.amax(Zcompleteu,axis=0);Zmaxl = np.amax(Zcompletel,axis=0)
+ZVxmaxu = np.amax(ZVxcompleteu,axis=0);ZVxmaxl = np.amax(ZVxcompletel,axis=0)
+Xmaxu = np.amax(Xcompleteu,axis=0);Xmaxl = np.amax(Xcompletel,axis=0)
+
+for j in np.arange(Xmaxu.shape[0]-1):
+    if Xmaxu[j+1] < Xmaxu[j] :
+        Xmaxu[j+1] = Xmaxu[j]
+        Zmaxu[j+1] = Zmaxu[j] 
+        ZVxmaxu[j+1] = ZVxmaxu[j] 
+
+Xmaxu_TKE = Xmaxu[Zmaxu>0.0001];Zmaxu = Zmaxu[Zmaxu>0.0001];
+Xmaxu_Vx = Xmaxu[ZVxmaxu>0.0001];ZVxmaxu = ZVxmaxu[ZVxmaxu>0.0001]
+
+for j in np.arange(Xmaxl.shape[0]-1):
+    if Xmaxl[j+1] < Xmaxl[j] :
+        Xmaxl[j+1] = Xmaxl[j]
+        Zmaxl[j+1] = Zmaxl[j] 
+        ZVxmaxl[j+1] = ZVxmaxl[j] 
+        
+Xmaxl_TKE = Xmaxl[Zmaxl>0.0001];Zmaxl = Zmaxl[Zmaxl>0.0001];
+Xmaxl_Vx = Xmaxl[ZVxmaxl>0.0001];ZVxmaxl = ZVxmaxl[ZVxmaxl>0.0001]
+
+pyplot.figure(3);
+pyplot.plot(Xlinesc,Zlinesc,label="centerline") 
+pyplot.plot(Xlinesu,Zlinesu,label="upper-straightline") 
+pyplot.plot(Xlinesl,Zlinesl,label="lower-straightline") 
+pyplot.plot(Xmaxu_TKE,Zmaxu,label="upper-maxline")
+pyplot.plot(Xmaxl_TKE,Zmaxl,label="lower-maxline")
+matplotlib.rcParams.update({'font.size': 10})
+pyplot.legend( bbox_to_anchor=(1, 0.9), fontsize =8); 
+pyplot.tick_params(labelsize=10)
+pyplot.xlabel('X/De',fontsize=12); pyplot.ylabel('TKE/Uj^2',fontsize=12)    
+pyplot.title('Line Plots - TKE vs X @ NTR = '+str(NTR)+' NPR = '+str(NPR), y = 1.02,fontsize=14)
+pyplot.savefig('LinePlots_TKE_'+'NTR'+str(NTR)+'_NPR'+str(NPR)+'.png',bbox_inches='tight',  dpi=300)
+
+pyplot.figure(4);
+pyplot.plot(Xlinesc,Vlinesc,label="centerline")
+pyplot.plot(Xlinesu,Vlinesu,label="upper-straightline")  
+pyplot.plot(Xlinesu,Vlinesl,label="lower-straightline")  
+pyplot.plot(Xmaxu_Vx,ZVxmaxu,label="upper-maxline")
+pyplot.plot(Xmaxl_Vx,ZVxmaxl,label="lower-maxline")   
+matplotlib.rcParams.update({'font.size': 10})
+pyplot.legend( bbox_to_anchor=(1, 0.9), fontsize =8); 
+pyplot.tick_params(labelsize=10)
+pyplot.xlabel('X/De', fontsize=12); pyplot.ylabel('Vx/Uj', fontsize=12)    
+pyplot.title('Line Plots - Vx vs X @ NTR = '+str(NTR)+' NPR = '+str(NPR), y = 1.02, fontsize=14)
+pyplot.savefig('LinePlots_Vx_'+'NTR'+str(NTR)+'_NPR'+str(NPR)+'.png', bbox_inches='tight', dpi=300)
+   
+pyplot.figure(5);
+pyplot.plot(Xlinesc,Vylinesc,label="centerline")
+pyplot.plot(Xlinesu,Vylinesu,label="upper-straightline")  
+pyplot.plot(Xlinesu,Vylinesl,label="lower-straightline")  
+matplotlib.rcParams.update({'font.size': 10})
+pyplot.legend( bbox_to_anchor=(1, 0.9), fontsize =8); 
+pyplot.tick_params(labelsize=10)
+pyplot.xlabel('X/De', fontsize=12); pyplot.ylabel('Vy/Uj', fontsize=12)    
+pyplot.title('Line Plots - Vy vs X @ NTR = '+str(NTR)+' NPR = '+str(NPR), y = 1.02, fontsize=14)
+pyplot.savefig('LinePlots_Vy_'+'NTR'+str(NTR)+'_NPR'+str(NPR)+'.png', bbox_inches='tight', dpi=300)
+   
+#---------------FFT--Vx--------------------------------------------
+
+pyplot.figure(6)
+matplotlib.rcParams.update({'font.size': 10})
+Hxc = abs(fft.fft(Vlinesc));Hxu = abs(fft.fft(Vlinesu));Hxl = abs(fft.fft(Vlinesl));
+Hx2c = Hxc[4:np.size(Vlinesc)/2]; Hx2u = Hxu[4:np.size(Vlinesu)/2]; Hx2l = Hxl[4:np.size(Vlinesl)/2]; 
+freqXc = fft.fftfreq(len(Vlinesc), 1/35);freqX2c = 1/freqXc[4:np.size(Vlinesc)/2]
+freqXu = fft.fftfreq(len(Vlinesu), 1/35);freqX2u = 1/freqXu[4:np.size(Vlinesu)/2]
+freqXl = fft.fftfreq(len(Vlinesl), 1/35);freqX2l = 1/freqXl[4:np.size(Vlinesl)/2]
+
+pyplot.plot(freqX2c, Hx2c, label='Vx_centerline')
+pyplot.plot(freqX2u, Hx2u, label='Vx_upperline')
+pyplot.plot(freqX2l, Hx2l, label='Vx_lowerline')
+
+pyplot.tight_layout(); pyplot.legend(fontsize =8);
+pyplot.tick_params(labelsize=10);pyplot.xticks(np.arange(0,6,0.5));
+axes = pyplot.gca();  #axes.xaxis.grid(True, which='major');axes.xaxis.grid(False, which='minor');#pyplot.minorticks_on()
+pyplot.ylabel(' PSD (FFT) ', fontsize=12);pyplot.xlabel('Wavelength(/De)', fontsize=12)
+pyplot.title('Wavelength spectrum of Vx'+' at NTR '+str(NTR)+', NPR '+str(NPR), fontsize=15, y=1.01)
+pyplot.savefig('Fft_Vx_'+'NTR'+str(NTR)+'_NPR'+str(NPR)+'.png', dpi=300, bbox_inches='tight')
+
+#---------------Vx SPECTOGRAM------------
+
+freqs_1,times_1, spec_1 = signal.spectrogram(ZVxmaxu,35,window='hanning', nperseg=np.size(ZVxmaxu)/6, noverlap=np.size(ZVxmaxu)/6.04,detrend=False,scaling='spectrum');
+freqs_2,times_2, spec_2 = signal.spectrogram(Vlinesu,35,window='hanning', nperseg=np.size(Vlinesu)/6.00, noverlap=np.size(Vlinesu)/6.04,detrend=False, scaling='spectrum');
+freqs_3,times_3, spec_3 = signal.spectrogram(Vlinesc,35,window='hanning', nperseg=np.size(Vlinesc)/6.00, noverlap=np.size(Vlinesc)/6.04,detrend=False, scaling='spectrum');
+freqs_4,times_4, spec_4 = signal.spectrogram(ZVxmaxu,35,window='hanning', nperseg=np.size(ZVxmaxu)/2.00, noverlap=np.size(ZVxmaxu)/2.01,detrend=False, scaling='spectrum');
+freqs_5,times_5, spec_5 = signal.spectrogram(Vlinesu,35,window='hanning', nperseg=np.size(Vlinesu)/2.00, noverlap=np.size(Vlinesu)/2.01,detrend=False, scaling='spectrum');
+freqs_6,times_6, spec_6 = signal.spectrogram(Vlinesc,35,window='hanning', nperseg=np.size(Vlinesc)/2.00, noverlap=np.size(Vlinesc)/2.01,detrend=False, scaling='spectrum');
+
+pyplot.figure(7); matplotlib.rcParams.update({'font.size': 12})
+fig = pyplot.figure(figsize=(18,9)); fig.clear()
+
+ax1  = fig.add_subplot(231)
+pcm1  = ax1.pcolormesh(times_1,freqs_1,np.log10(spec_1),cmap='jet')
+fig.colorbar(pcm1,ax=ax1)
+ax1.set_title('Vx - uppermax line', fontsize = 20 )  
+ax1.set_xlabel('Distance from jet exit, X/De', fontsize = 15);ax1.set_ylabel('wavenumbers*De', fontsize = 15)
+
+ax2 = fig.add_subplot(232)
+pcm2  = ax2.pcolormesh(times_2,freqs_2,np.log10(spec_2),cmap='jet')
+fig.colorbar(pcm2,ax=ax2)
+ax2.set_title('Vx - upperstraight line', fontsize = 20 )  
+ax2.set_xlabel('Distance from jet exit, X/De', fontsize = 15);ax2.set_ylabel('wavenumbers*De', fontsize = 15)
+
+ax3  = fig.add_subplot(233)
+pcm3  = ax3.pcolormesh(times_3,freqs_3,np.log10(spec_3),cmap='jet')
+fig.colorbar(pcm3,ax=ax3)
+ax3.set_title('Vx - center line', fontsize = 20 )  
+ax3.set_xlabel('Distance from jet exit, X/De', fontsize = 15);ax3.set_ylabel('wavenumbers*De', fontsize = 15)
+
+ax4  = fig.add_subplot(234)
+pcm4  = ax4.pcolormesh(times_4,freqs_4,np.log10(spec_4),cmap='jet')
+fig.colorbar(pcm4,ax=ax4)
+ax4.set_title('Vx - uppermax line - HighRes', fontsize = 20 )  
+ax4.set_xlabel('Distance from jet exit, X/De', fontsize = 15);ax4.set_ylabel('wavenumbers*De', fontsize = 15)
+
+ax5  = fig.add_subplot(235)
+pcm5  = ax5.pcolormesh(times_5,freqs_5,np.log10(spec_5),cmap='jet')
+fig.colorbar(pcm5,ax=ax5)
+ax5.set_title('Vx - upperstraight line - HighRes', fontsize = 20 )  
+ax5.set_xlabel('Distance from jet exit, X/De', fontsize = 15);ax5.set_ylabel('wavenumbers*De', fontsize = 15)
+
+ax6  = fig.add_subplot(236)
+pcm6  = ax6.pcolormesh(times_6,freqs_6,np.log10(spec_6),cmap='jet')
+fig.colorbar(pcm6,ax=ax6)
+ax6.set_title('Vx - center line - High Res', fontsize = 20 )  
+ax6.set_xlabel('Distance from jet exit, X/De', fontsize = 15);ax6.set_ylabel('wavenumbers*De', fontsize = 15)
+
+#pyplot.xticks(fontsize=10);#pyplot.xticks(np.arange(0,6,0.5));
+pyplot.suptitle('Spectogram of Vx for various lines along jet (logscaled)'+' at NTR '+str(NTR)+', NPR '+str(NPR), fontsize =25 )
+pyplot.tight_layout(); fig.subplots_adjust(top=0.88)
+pyplot.savefig('Spectogram_Vx_'+'NTR'+str(NTR)+'_NPR'+str(NPR)+'.png', dpi=300)
+
+#---------------TKE SPECTOGRAM------------
+freqs_upmax,times_upmax, spec_upmax = signal.spectrogram(Zmaxu,35,window='hanning', nperseg=np.size(Zmaxu)/6, noverlap=np.size(Zmaxu)/6.04,detrend=False,scaling='spectrum');
+freqs_lowmax,times_lowmax, spec_lowmax = signal.spectrogram(Zmaxl,35,window='hanning', nperseg=np.size(Zmaxl)/6.00, noverlap=np.size(Zmaxl)/6.04,detrend=False, scaling='spectrum');
+freqs_centre,times_centre, spec_centre = signal.spectrogram(Zlinesc,35,window='hanning', nperseg=np.size(Zlinesc)/6.00, noverlap=np.size(Zlinesc)/6.04,detrend=False, scaling='spectrum');
+freqs_upmaxHR,times_upmaxHR, spec_upmaxHR = signal.spectrogram(Zmaxu,35,window='hanning', nperseg=np.size(Zmaxu)/2.00, noverlap=np.size(Zmaxu)/2.01,detrend=False, scaling='spectrum');
+freqs_lowmaxHR,times_lowmaxHR, spec_lowmaxHR = signal.spectrogram(Zmaxl,35,window='hanning', nperseg=np.size(Zmaxl)/2.00, noverlap=np.size(Zmaxl)/2.01,detrend=False, scaling='spectrum');
+freqs_centreHR,times_centreHR, spec_centreHR = signal.spectrogram(Zlinesc,35,window='hanning', nperseg=np.size(Zlinesc)/2.00, noverlap=np.size(Zlinesc)/2.01,detrend=False, scaling='spectrum');
+
+pyplot.figure(8); matplotlib.rcParams.update({'font.size': 12})
+fig = pyplot.figure(figsize=(18,9)); fig.clear()
+
+ax1  = fig.add_subplot(231)
+pcm1  = ax1.pcolormesh(times_upmax,freqs_upmax,np.log10(spec_upmax),cmap='jet')
+fig.colorbar(pcm1,ax=ax1)
+ax1.set_title('TKE - uppermax line', fontsize = 20 )  
+ax1.set_xlabel('Distance from jet exit, X/De', fontsize = 15);ax1.set_ylabel('wavenumbers*De', fontsize = 15)
+
+ax2 = fig.add_subplot(232)
+pcm2  = ax2.pcolormesh(times_lowmax,freqs_lowmax,np.log10(spec_lowmax),cmap='jet')
+fig.colorbar(pcm2,ax=ax2)
+ax2.set_title('TKE - lowermax line', fontsize = 20 )  
+ax2.set_xlabel('Distance from jet exit, X/De', fontsize = 15);ax2.set_ylabel('wavenumbers*De', fontsize = 15)
+
+ax3  = fig.add_subplot(233)
+pcm3  = ax3.pcolormesh(times_centre,freqs_centre,np.log10(spec_centre),cmap='jet')
+fig.colorbar(pcm3,ax=ax3)
+ax3.set_title('TKE - center line', fontsize = 20 )  
+ax3.set_xlabel('Distance from jet exit, X/De', fontsize = 15);ax3.set_ylabel('wavenumbers*De', fontsize = 15)
+
+ax4  = fig.add_subplot(234)
+pcm4  = ax4.pcolormesh(times_upmaxHR,freqs_upmaxHR,np.log10(spec_upmaxHR),cmap='jet')
+fig.colorbar(pcm4,ax=ax4)
+ax4.set_title('TKE - uppermax line - HighRes', fontsize = 20 )  
+ax4.set_xlabel('Distance from jet exit, X/De', fontsize = 15);ax4.set_ylabel('wavenumbers*De', fontsize = 15)
+
+ax5  = fig.add_subplot(235)
+pcm5  = ax5.pcolormesh(times_lowmaxHR,freqs_lowmaxHR,np.log10(spec_lowmaxHR),cmap='jet')
+fig.colorbar(pcm5,ax=ax5)
+ax5.set_title('TKE - lowermax line - HighRes', fontsize = 20 )  
+ax5.set_xlabel('Distance from jet exit, X/De', fontsize = 15);ax5.set_ylabel('wavenumbers*De', fontsize = 15)
+
+ax6  = fig.add_subplot(236)
+pcm6  = ax6.pcolormesh(times_centreHR,freqs_centreHR,np.log10(spec_centreHR),cmap='jet')
+fig.colorbar(pcm6,ax=ax6)
+ax6.set_title('TKE - center line - High Res', fontsize = 20 )  
+ax6.set_xlabel('Distance from jet exit, X/De', fontsize = 15);ax6.set_ylabel('wavenumbers*De', fontsize = 15)
+
+#pyplot.xticks(fontsize=10);#pyplot.xticks(np.arange(0,6,0.5));
+pyplot.suptitle('Spectogram of TKE for various lines along jet (logscaled)'+' at NTR '+str(NTR)+', NPR '+str(NPR), fontsize =25 )
+pyplot.tight_layout(); fig.subplots_adjust(top=0.88)
+pyplot.savefig('Spectogram_TKE_'+'NTR'+str(NTR)+'_NPR'+str(NPR)+'.png', dpi=300)
+
+print('done')
+
+\end{lstlisting}
+\vspace{10mm}
+\begin{center}
+----- THE END -----
+\end{center}

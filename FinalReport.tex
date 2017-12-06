@@ -1,0 +1,58 @@
+\documentclass[11pt]{report}
+
+\usepackage{fullpage}
+%\usepackage[top=1in, bottom=1in]{geometry}
+\usepackage{amsfonts}
+%for math symbols, Ex: \mathbb{N}
+\def\Definition{what does something mean}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{pdfpages}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{listings}
+%\AtBeginDocument{\renewcommand{\bibname}{References}}
+
+\begin{document}
+
+%\title{PIV Data Analysis : Supersonic jet from circular nozzle}
+%\author{Raghuvir reddy Jonnagiri}
+%\date{\today}
+%\maketitle
+%\thispagestyle{empty}
+%\vfill
+
+\begin{titlepage}
+	\centering
+	\includegraphics[width=0.3\textwidth]{images/uclogo.png}\par\vspace{1cm}
+	\vspace{1cm}
+	{\scshape\Large Graduate course project\par}
+	\vspace{1.5cm}
+	{\huge\bfseries PIV Data Analysis : Supersonic jet from circular nozzle\par}
+	\vspace{2cm}
+	{\Large\itshape Raghuvir reddy Jonnagiri\par}
+	\vfill
+	Professor\par
+	Dr. Ephraim Gutmark\par
+    \vspace{2cm}
+ 	Project Guide \par
+	Florian Baier   
+	\vfill
+
+% Bottom of the page
+	{\large \today\par}
+\end{titlepage}
+
+\clearpage
+
+\tableofcontents
+\thispagestyle{empty}
+
+\setcounter{page}{0}
+\input{introduction.tex}
+\input{methodology.tex}
+\input{analysis.tex}
+\input{bibfiles.tex}
+\input{pythoncode.tex}
+
+\end{document}
