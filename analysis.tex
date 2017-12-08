@@ -21,19 +21,19 @@
 	\centering
 	\includegraphics[width=2.3in]{images/PIV_NTR1p5_NPR2p5.png}
 	\caption{NTR:1p5 NPR:2p5 }
-	\label{fig:setup1}
+	\label{fig:2dplots1p52p5}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
 	\centering
 	\includegraphics[width=2.3in]{images/PIV_NTR1p5_NPR3p6.png}
 	\caption{NTR:1p5 NPR:3p6 }
-	\label{fig:setup2}
+	\label{fig:2dplots1p53p6}
 \end{subfigure}
 \begin{subfigure}{1.0\textwidth}
 	\centering
 	\includegraphics[width=2.3in]{images/PIV_NTR1p5_NPR4p5.png}
 	\caption{NTR:1p5 NPR:4p5 }
-	\label{fig:setup2}
+	\label{fig:2dplots1p544p5}
 \end{subfigure}
 \caption{$V_x$, TKE without chevrons at $M_d$ 1.5 }
 \label{fig:2dplots}
@@ -47,37 +47,37 @@ For an ideally expanded flow; assuming $D_j$, $M_j$ same as $D_e$,$M_d$; shock c
 	\centering
 	\includegraphics[width=2.5in]{images/Fft_Vx_NTR1p5_NPR2p5.png}
 	\caption{NTR:1p5 NPR:2p5 }
-	\label{fig:setup1}
+	\label{fig:fftplots1p52p5}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
 	\centering
 	\includegraphics[width=2.5in]{images/Fft_Vx_NTR1p5_NPR3p0.png}
 	\caption{NTR:1p5 NPR:3p0 }
-	\label{fig:setup2}
+	\label{fig:fftplots1p53p0}
 \end{subfigure}
 \begin{subfigure}{0.5\textwidth}
 	\centering
 	\includegraphics[width=2.5in]{images/Fft_Vx_NTR1p5_NPR3p6.png}
 	\caption{NTR:1p5 NPR:3p6 }
-	\label{fig:setup2}
+	\label{fig:fftplots1p53p6}
 \end{subfigure}
 \begin{subfigure}{0.5\textwidth}
 	\centering
 	\includegraphics[width=2.5in]{images/Fft_Vx_NTR1p5_NPR4p0.png}
 	\caption{NTR:1p5 NPR:4p0 }
-	\label{fig:setup2}
+	\label{fig:fftplots1p54p0}
 \end{subfigure}
 \begin{subfigure}{1.0\textwidth}
 	\centering
 	\includegraphics[width=2.5in]{images/Fft_Vx_NTR1p5_NPR4p5.png}
 	\caption{NTR:1p5 NPR:4p5 }
-	\label{fig:setup2}
+	\label{fig:fftplots1p54p5}
 \end{subfigure}
 \caption{Wavelength spectrum using FFT for $V_x$ centreline data without chevrons}
 \label{fig:fftplots}
 \end{figure}
 
-As we see in the FFT plots (fig \ref{fig:fftplots}), for ideally expanded flow, shock cell wavelength is close to the value earlier calculated. As the pressure increases, wavelength with maximum psd increases. We can notice that in 2d plots too(fig \ref{fig:2dplots}). It is also interesting to note that the wavelengths are well defined for underexpanded flows because of the few oblique shocks. For overexpanded flows, since the shocks are due to the large number of reflected expansion waves, the wavelength pattern is more rugged. So is the case for near perfectly expanded flow.\\
+As we see in the FFT plots (fig \ref{fig:fftplots}), for ideally expanded flow, shock cell wavelength is close to the value earlier calculated. As the pressure increases, wavelength with maximum psd increases.This We can notice that in 2d plots too(fig \ref{fig:2dplots}). But the huge change in shock cell length from underexpanded to overexpanded can not be explained by the Tam's equation since change in $D_j$ is small relatively. This shows that the equation, as it is, has limitations in the range of its application.  It is also interesting to note that the wavelengths are well defined for underexpanded flows because of the few oblique shocks. For overexpanded flows, since the shocks are due to the large number of reflected expansion waves, the wavelength pattern is more rugged. So is the case for near perfectly expanded flow.\\
 
 Inlet temperature doesn't seem to have major effect on wavelength pattern. Although when the NTR is 3.0, wavelength is clearly subdued. This shows that the shocks are not as intense as of colder flows \\
 
@@ -89,44 +89,44 @@ If we carefully observe in the fig \ref{fig:2dplots}, two shocks exist at the li
 	\centering
 	\includegraphics[width=3in]{images/LinePlots_Vx_NTR1p0_NPR3p6.png}
 	\caption{NTR:1p0 NPR:3p6 }
-	\label{fig:setup1}
+	\label{fig:lineplotsVx1p03p6}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
 	\centering
 	\includegraphics[width=2.5in]{images/LinePlots_Vx_NTR1p5_NPR3p6.png}
 	\caption{NTR:1p5 NPR:3p6 }
-	\label{fig:setup2}
+	\label{fig:lineplotsVx1p53p6}
 \end{subfigure}
 \caption{centreline plots for $V_x$ without chevrons }
 \label{fig:lineplotsVx}
 \end{figure} 
 
-Spectograms are another way to interpret lineplots data. From fig \ref{fig:spectogramVx}, most of the spectrum seem to be around the wavenumber (1/wavelength) that we calculated analytically and also noticed in FFT plots(fig \ref{fig:fftplots}). Precision is not high as the sampling data is small, but it gives an idea of spectrum at every point along jet. Multiple wavenumbers merging to form a single broad smudge shows merging of shocks and decrease substantially showing the end of potential core because of merging of shear layers. Spectogram of TKE(fig \ref{fig:spectogramTKE}) can also be similarly used to estimate the end of potential core. This wavelength spectrum could also be helpful for modelling acoustic sources along the jet. \\ 
+Spectograms are another way to interpret lineplots data. From fig \ref{fig:spectogramVx}, most of the spectrum seem to be around the wavenumber (1/wavelength) that we calculated analytically and also noticed in FFT plots(fig \ref{fig:fftplots}). Precision is not high as the sampling data is small, but it gives an idea of spectrum at every point along jet. Multiple wavenumbers merging to form a single broad smudge shows merging of shocks and decrease substantially showing the end of potential core because of merging of shear layers. 
 
 \begin{figure}[H]
 \begin{subfigure}{0.5\textwidth}
 	\centering
 	\includegraphics[width=3in]{images/Spectogram_Vx_NTR2p5_NPR2p5.png}
 	\caption{NTR:2p5 NPR:2p5 }
-	\label{fig:setup1}
+	\label{fig:spectogramVx2p52p5}
 \end{subfigure}%
 \begin{subfigure}{0.5\textwidth}
 	\centering
 	\includegraphics[width=3in]{images/Spectogram_Vx_NTR2p5_NPR3p0.png}
-	\caption{NTR:2p5 NPR:3p6 }
-	\label{fig:setup2}
+	\caption{NTR:2p5 NPR:3p0 }
+	\label{fig:spectogramVx2p53p6}
 \end{subfigure}\\
 \begin{subfigure}{0.5\textwidth}
 	\centering
 	\includegraphics[width=3in]{images/Spectogram_Vx_NTR2p5_NPR3p6.png}
-	\caption{NTR:2p5 NPR:2p5 }
-	\label{fig:setup1}
+	\caption{NTR:2p5 NPR:3p6 }
+	\label{fig:spectogramVx2p52p5}
 \end{subfigure}%
 \begin{subfigure}{0.5\textwidth}
 	\centering
 	\includegraphics[width=3in]{images/Spectogram_Vx_NTR2p5_NPR4p0.png}
-	\caption{NTR:2p5 NPR:3p6 }
-	\label{fig:setup2}
+	\caption{NTR:2p5 NPR:4p0 }
+	\label{fig:spectogramVx2p53p6}
 \end{subfigure}
 \caption{Spectogram plots for centreline $V_x$ without chevrons }
 \label{fig:spectogramVx}
@@ -137,29 +137,31 @@ Spectograms are another way to interpret lineplots data. From fig \ref{fig:spect
 	\centering
 	\includegraphics[width=3in]{images/Spectogram_TKE_NTR2p5_NPR2p5.png}
 	\caption{NTR:2p5 NPR:2p5 }
-	\label{fig:setup1}
+	\label{fig:spectogramTKE2p52p5}
 \end{subfigure}%
 \begin{subfigure}{0.5\textwidth}
 	\centering
 	\includegraphics[width=3in]{images/Spectogram_TKE_NTR2p5_NPR3p0.png}
 	\caption{NTR:2p5 NPR:3p6 }
-	\label{fig:setup2}
+	\label{fig:spectogramTKE2p53p0}
 \end{subfigure}\\
 \begin{subfigure}{0.5\textwidth}
 	\centering
 	\includegraphics[width=3in]{images/Spectogram_TKE_NTR2p5_NPR3p6.png}
 	\caption{NTR:2p5 NPR:2p5 }
-	\label{fig:setup1}
+	\label{fig:spectogramTKE2p53p6}
 \end{subfigure}%
 \begin{subfigure}{0.5\textwidth}
 	\centering
 	\includegraphics[width=3in]{images/Spectogram_TKE_NTR2p5_NPR4p0.png}
 	\caption{NTR:2p5 NPR:3p6 }
-	\label{fig:setup2}
+	\label{fig:spectogramTKE2p54p0}
 \end{subfigure}
 \caption{Spectogram plots for centreline TKE without chevrons }
 \label{fig:spectogramTKE}
 \end{figure} 
+
+Spectogram of TKE(fig \ref{fig:spectogramTKE}) can also be similarly used to estimate the end of potential core. This wavelength spectrum could also be helpful for modelling acoustic sources along the jet. \\ 
 
 \section{Effect of Chevron}  
 
@@ -168,21 +170,21 @@ Only three cases, all perfectly expanded flows for different temperatures, have 
 \begin{figure}[H]
 \begin{subfigure}{.5\textwidth}
 	\centering
-	\includegraphics[width=3in]{images/Fft_Vx_NTR1p0_NPR3p6c.png}
+	\includegraphics[width=2.5in]{images/Fft_Vx_NTR1p0_NPR3p6c.png}
 	\caption{NTR:1p0 NPR:3p6 with chevrons }
-	\label{fig:setup1}
+	\label{fig:fftplotsc1p03p6}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
 	\centering
-	\includegraphics[width=3in]{images/Fft_Vx_NTR2p0_NPR3p6c.png}
+	\includegraphics[width=2.5in]{images/Fft_Vx_NTR2p0_NPR3p6c.png}
 	\caption{NTR:2p0 NPR:3p6 with chevrons}
-	\label{fig:setup2}
+	\label{fig:fftplotsc2p03p6}
 \end{subfigure}
 \begin{subfigure}{1.0\textwidth}
 	\centering
-	\includegraphics[width=3in]{images/Fft_Vx_NTR3p0_NPR3p6c.png}
+	\includegraphics[width=2.5in]{images/Fft_Vx_NTR3p0_NPR3p6c.png}
 	\caption{NTR:3p0 NPR:3p6 with chevrons}
-	\label{fig:setup1}
+	\label{fig:fftplotsc3p03p6}
 \end{subfigure}%
 \caption{wavelength spectrum using FFT for centreline $V_x$ with  chevrons }
 \label{fig:fftplotsc}
@@ -195,44 +197,134 @@ Another interesting observation (fig \ref{fig:lineplotsTKE}) is considerable inc
 	\centering
 	\includegraphics[width=2.5in]{images/LinePlots_TKE_NTR1p0_NPR3p6.png}
 	\caption{NTR:1p0 NPR:3p6 without chevrons }
-	\label{fig:setup1}
+	\label{fig:lineplotsTKE1p03p6}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
 	\centering
-	\includegraphics[width=3in]{images/LinePlots_TKE_NTR1p0_NPR3p6c.png}
+	\includegraphics[width=3.25in]{images/LinePlots_TKE_NTR1p0_NPR3p6c.png}
 	\caption{NTR:1p0 NPR:3p6 with chevrons}
-	\label{fig:setup2}
+	\label{fig:lineplotsTKE1p03p6c}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
 	\centering
 	\includegraphics[width=2.5in]{images/LinePlots_TKE_NTR2p0_NPR3p6.png}
 	\caption{NTR:2p0 NPR:3p6 without chevrons}
-	\label{fig:setup1}
+	\label{fig:lineplotsTKE2p03p6}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
 	\centering
 	\includegraphics[width=2.5in]{images/LinePlots_TKE_NTR2p0_NPR3p6c.png}
 	\caption{NTR:2p0 NPR:3p6 with chevrons}
-	\label{fig:setup2}
+	\label{fig:lineplotsTKE2p03p6c}
 \end{subfigure}
 \begin{subfigure}{.5\textwidth}
 	\centering
 	\includegraphics[width=2.5in]{images/LinePlots_TKE_NTR3p0_NPR3p6.png}
 	\caption{NTR:3p0 NPR:3p6 without chevrons}
-	\label{fig:setup1}
+	\label{fig:lineplotsTKE3p03p6}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
 	\centering
 	\includegraphics[width=2.5in]{images/LinePlots_TKE_NTR3p0_NPR3p6c.png}
 	\caption{NTR:3p0 NPR:3p6 with chevrons}
-	\label{fig:setup2}
+	\label{fig:lineplotsTKE3p03p6c}
 \end{subfigure}
 \caption{centreline plots for TKE with and without chevrons }
 \label{fig:lineplotsTKE}
 \end{figure}
 
+\section{Effect of nozzle diameter}
+
+Fig \ref{fig:lineplotsfftb} shows that changing diameter of nozzle does not affect non-dimensionalized shock cell wavelength. But increasing diameter does seem to make distribution of shock cells slighlty more uniform as the spectrum strength is higher for larger nozzle.
+
+\begin{figure}[H]
+\begin{subfigure}{.5\textwidth}
+	\centering
+	\includegraphics[width=2.5in]{images/Fft_Vx_NTR2p5_NPR2p5.png}
+	\caption{NTR:2p5 NPR:2p5 - 0.813in dia }
+	\label{fig:lineplotsfftb2p52p5}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\centering
+	\includegraphics[width=2.5in]{images/Fft_Vx_NTR2p5_NPR2p5b.png}
+	\caption{NTR:2p5 NPR:2p5 - 1.085in dia }
+	\label{fig:lineplotsfft2p52p5b}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\centering
+	\includegraphics[width=2.5in]{images/Fft_Vx_NTR2p5_NPR3p6.png}
+	\caption{NTR:2p5 NPR:3p6 - 0.813in dia}
+	\label{fig:lineplotsfftb2p53p6}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\centering
+	\includegraphics[width=2.5in]{images/Fft_Vx_NTR2p5_NPR3p6b.png}
+	\caption{NTR:2p5 NPR:3p6 - 1.085in dia}
+	\label{fig:lineplotsfftb2p53p6b}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\centering
+	\includegraphics[width=2.5in]{images/Fft_Vx_NTR2p5_NPR4p5.png}
+	\caption{NTR:2p5 NPR:4p5 - 0.813in dia}
+	\label{fig:lineplotsfftb2p54p5}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\centering
+	\includegraphics[width=2.5in]{images/Fft_Vx_NTR2p5_NPR4p5b.png}
+	\caption{NTR:2p5 NPR:4p5 - 1.085in dia}
+	\label{fig:lineplotsfftb2p54p5b}
+\end{subfigure}
+\caption{FFT of centreline plots for Vx with dia 0.813in and 1.085in }
+\label{fig:lineplotsfftb}
+\end{figure}
+
+Interestingly, Non-dimensionalized length of potential core (fig \ref{fig:lineplotsTKEb}), is not constant anymore. Larger nozzle has more than 50\% higher core length than smaller nozzle consistently for various pressures (diameter ratio of nozzles is 1.33). This could be because of disproportionate dependence of various properties on length scales. It could also have something to do with the cascading of flow structures into small components which are no longer related to the scales of geometry so that spreading of shear layer or turbulence is less reliant on jet velocity.
+
+\begin{figure}[H]
+\begin{subfigure}{.5\textwidth}
+	\centering
+	\includegraphics[width=2.5in]{images/LinePlots_TKE_NTR2p5_NPR2p5.png}
+	\caption{NTR:2p5 NPR:2p5 - 0.813in dia }
+	\label{fig:lineplotsTKEb2p52p5}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\centering
+	\includegraphics[width=2.5in]{images/LinePlots_TKE_NTR2p5_NPR2p5b.png}
+	\caption{NTR:2p5 NPR:2p5 - 1.085in dia }
+	\label{fig:lineplotsTKEb2p52p5b}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\centering
+	\includegraphics[width=2.5in]{images/LinePlots_TKE_NTR2p5_NPR3p6.png}
+	\caption{NTR:2p5 NPR:3p6 - 0.813in dia}
+	\label{fig:lineplotsTKEb2p53p6}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\centering
+	\includegraphics[width=2.5in]{images/LinePlots_TKE_NTR2p5_NPR3p6b.png}
+	\caption{NTR:2p5 NPR:3p6 - 1.085in dia}
+	\label{fig:lineplotsTKEb2p53p6b}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+	\centering
+	\includegraphics[width=2.5in]{images/LinePlots_TKE_NTR2p5_NPR4p5.png}
+	\caption{NTR:2p5 NPR:4p5 - 0.813in dia}
+	\label{fig:lineplotsTKEb2p54p5}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\centering
+	\includegraphics[width=2.5in]{images/LinePlots_TKE_NTR2p5_NPR4p5b.png}
+	\caption{NTR:2p5 NPR:4p5 - 1.085in dia}
+	\label{fig:lineplotsTKEb2p54p5b}
+\end{subfigure}
+\caption{centreline plots for TKE with dia 0.813in and 1.085in }
+\label{fig:lineplotsTKEb}
+\end{figure}
+
+
+ 
 \section{Summary}
 
-Various visualization techniques, including FFT and spectogram, have been used to gather as much information as possible from velocity, TKE of steady PIV data. Shock cell lengths observed are compared with analytical values. Effect of pressure, temperature, chevron including conflicts and agreements with published data is discussed. 
+Various visualization techniques, including FFT and spectogram, have been used to gather as much information as possible from velocity, TKE of steady PIV data. Shock cell lengths observed are compared with analytical values. Effect of pressure, temperature, chevron, nozzle diameter including conflicts and agreements with published data is discussed. 
 
 %\end{document}

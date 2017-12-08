@@ -7,7 +7,7 @@
 
 \begin{lstlisting}[language=Python]
 '''
-@author: Raghuvir reddy Jonnagiri
+@author: raghuvir
 project: PIV Data Analysis - supersonic jet from circular nozzle
 '''
 
@@ -20,9 +20,12 @@ from numpy import abs
 from scipy import signal
 from numpy import fft
 
-TRPR = np.array([[3.0,3.6]]) # temperature ratio, pressure ratio 
+# Values to change for every setup
+TRPR = np.array([[1.0,3.6]]) # temperature ratio, pressure ratio 
 dia = 0.813*25.4 # converting exit diameter from inches to mm
+jc = 0.00 # jet centre to adjust position of upper and lower lines
 
+resX = 29 # resolution in x per 0.812inch, no need to change unless camera setup is changed
 NTR = TRPR[0,0]; ntr  = str(int(NTR))+'p'+str(int((NTR%1)*10))# for naming output files
 NPR = TRPR[0,1]; npr  = str(int(NPR))+'p'+str(int((NPR%1)*10))
 
@@ -38,6 +41,7 @@ try :
 except IOError :
     print('Please check the name format. Ex : BOOO1up_1.0_3.6 where 1.0 is ntr & 3.6 is npr')
     exit()
+print(np.shape(Vx1))
 
 # Correcting the positions of images manually before merging
 Vx1[22360:,0] =  Vx1[22360:,0] + Vx1[22359,0] - Vx1[0,0] -10
@@ -83,8 +87,8 @@ subplot1.margins(0.003) ; subplot1.tick_params(labelsize=20)
 subplot1.set_ylim([-1.5,1.5])
       
 X, Y, Z = TKE.T; X = X/dia; Y = Y/dia; Z = Z/(Velmax**2.0)
-dum = subplot2.scatter(X, Y, c = np.power(Z,1), cmap = pyplot.cm.jet,s=60); g.colorbar(dum, ax = subplot2,pad=0.015)
-subplot2.set_title('TKE magnitudes, TKE/Uj^2', fontsize = 30, y=1.02 )  
+dum = subplot2.scatter(X, Y, c = np.power(Z,0.5), cmap = pyplot.cm.jet,s=60); g.colorbar(dum, ax = subplot2,pad=0.015)
+subplot2.set_title('TKE magnitudes (color scale normalized with square root), TKE/Uj^2', fontsize = 30, y=1.02 )  
 subplot2.set_xlabel('X-value, X/De', fontsize = 25);subplot2.set_ylabel('Y-value, Y/De', fontsize = 25)
 subplot2.margins(0.003) ; subplot2.tick_params(labelsize=20); subplot2.set_ylim([-1.5,1.5])
 g.suptitle('PIV data at NTR = '+str(NTR)+' and NPR = '+str(NPR), fontsize = 40, x = 0.47, y =0.95)
@@ -102,7 +106,7 @@ gcf1 = pyplot.gcf(); gcf1.set_size_inches(8,3)
 pyplot.savefig('PIV_Vy_'+'NTR'+str(NTR)+'_NPR'+str(NPR)+'.png',dpi=300,bbox_inches = 'tight')
 
 #centerline
-dummyc = (abs(0.05-Y)==np.min(abs(0.05-Y[0:22360]))) | (abs(0.05-Y)==np.min(abs(0.05-Y[22360:44720]))) | (abs(0.05-Y)==np.min(abs(0.05-Y[44720:67080]))) | (abs(0.05-Y)==np.min(abs(0.05-Y[67080:89438])))
+dummyc = (abs(jc-Y)==np.min(abs(jc-Y[0:22360]))) | (abs(jc-Y)==np.min(abs(jc-Y[22360:44720]))) | (abs(jc-Y)==np.min(abs(jc-Y[44720:67080]))) | (abs(jc-Y)==np.min(abs(jc-Y[67080:89438])))
 dummyc = dummyc & (Z>0.0001) #ignoring data with z value as 0
 
 #xlines is xvalues, zlines is tke values, vlines is velocity values
@@ -116,7 +120,7 @@ for j in np.arange(Xlinesc.shape[0]-1):
         Vylinesc[j+1] = Vylinesc[j]
 
 #upper line
-dummyu = (abs(0.55-Y)==np.min(abs(0.55-Y[0:22360]))) | (abs(0.55-Y)==np.min(abs(0.55-Y[22360:44720]))) | (abs(0.55-Y)==np.min(abs(0.55-Y[44720:67080]))) | (abs(0.55-Y)==np.min(abs(0.55-Y[67080:89438])))
+dummyu = (abs(0.5+jc-Y)==np.min(abs(0.5+jc-Y[0:22360]))) | (abs(0.5+jc-Y)==np.min(abs(0.5+jc-Y[22360:44720]))) | (abs(0.5+jc-Y)==np.min(abs(0.5+jc-Y[44720:67080]))) | (abs(0.5+jc-Y)==np.min(abs(0.5+jc-Y[67080:89438])))
 dummyu = dummyu & (Z>0.0001) #ignoring data with z value as 0
 
 Xlinesu = X[dummyu]; Zlinesu = Z[dummyu];Vlinesu = ZVx[dummyu];Vylinesu = ZVy[dummyu]
@@ -130,7 +134,7 @@ for j in np.arange(Xlinesu.shape[0]-1):
         Vylinesu[j+1] = Vylinesu[j]
      
 #lower line
-dummyl = (abs(-0.45-Y)==np.min(abs(-0.45-Y[0:22360]))) | (abs(-0.45-Y)==np.min(abs(-0.45-Y[22360:44720]))) | (abs(-0.45-Y)==np.min(abs(-0.45-Y[44720:67080]))) | (abs(-0.45-Y)==np.min(abs(-0.45-Y[67080:89438])))
+dummyl = (abs(jc-0.5-Y)==np.min(abs(jc-0.5-Y[0:22360]))) | (abs(jc-0.5-Y)==np.min(abs(jc-0.5-Y[22360:44720]))) | (abs(jc-0.5-Y)==np.min(abs(jc-0.5-Y[44720:67080]))) | (abs(jc-0.5-Y)==np.min(abs(jc-0.5-Y[67080:89438])))
 dummyl = dummyl & (Z>0.0001) #ignoring data with z value as 0
 
 Xlinesl = X[dummyl]; Zlinesl = Z[dummyl];Vlinesl = ZVx[dummyl];Vylinesl = ZVy[dummyl]
@@ -194,7 +198,7 @@ pyplot.savefig('LinePlots_TKE_'+'NTR'+str(NTR)+'_NPR'+str(NPR)+'.png',bbox_inche
 pyplot.figure(4);
 pyplot.plot(Xlinesc,Vlinesc,label="centerline")
 pyplot.plot(Xlinesu,Vlinesu,label="upper-straightline")  
-pyplot.plot(Xlinesu,Vlinesl,label="lower-straightline")  
+pyplot.plot(Xlinesl,Vlinesl,label="lower-straightline")  
 pyplot.plot(Xmaxu_Vx,ZVxmaxu,label="upper-maxline")
 pyplot.plot(Xmaxl_Vx,ZVxmaxl,label="lower-maxline")   
 matplotlib.rcParams.update({'font.size': 10})
@@ -221,13 +225,13 @@ pyplot.figure(6)
 matplotlib.rcParams.update({'font.size': 10})
 Hxc = abs(fft.fft(Vlinesc));Hxu = abs(fft.fft(Vlinesu));Hxl = abs(fft.fft(Vlinesl));
 Hx2c = Hxc[4:np.size(Vlinesc)/2]; Hx2u = Hxu[4:np.size(Vlinesu)/2]; Hx2l = Hxl[4:np.size(Vlinesl)/2]; 
-freqXc = fft.fftfreq(len(Vlinesc), 1/35);freqX2c = 1/freqXc[4:np.size(Vlinesc)/2]
-freqXu = fft.fftfreq(len(Vlinesu), 1/35);freqX2u = 1/freqXu[4:np.size(Vlinesu)/2]
-freqXl = fft.fftfreq(len(Vlinesl), 1/35);freqX2l = 1/freqXl[4:np.size(Vlinesl)/2]
+freqXc = fft.fftfreq(len(Vlinesc), 1/resX);freqX2c = 1/freqXc[4:np.size(Vlinesc)/2] 
+freqXu = fft.fftfreq(len(Vlinesu), 1/resX);freqX2u = 1/freqXu[4:np.size(Vlinesu)/2]
+freqXl = fft.fftfreq(len(Vlinesl), 1/resX);freqX2l = 1/freqXl[4:np.size(Vlinesl)/2]
 
-pyplot.plot(freqX2c, Hx2c, label='Vx_centerline')
-pyplot.plot(freqX2u, Hx2u, label='Vx_upperline')
-pyplot.plot(freqX2l, Hx2l, label='Vx_lowerline')
+pyplot.plot(freqX2c*0.813*25.4/dia, Hx2c, label='Vx_centerline') #divide by 0.813 since sampling rate is adjusted to that dia i.e., 1/resX of 0.813
+pyplot.plot(freqX2u*0.813*25.4/dia, Hx2u, label='Vx_upperline')
+pyplot.plot(freqX2l*0.813*25.4/dia, Hx2l, label='Vx_lowerline')
 
 pyplot.tight_layout(); pyplot.legend(fontsize =8);
 pyplot.tick_params(labelsize=10);pyplot.xticks(np.arange(0,6,0.5));
@@ -238,12 +242,12 @@ pyplot.savefig('Fft_Vx_'+'NTR'+str(NTR)+'_NPR'+str(NPR)+'.png', dpi=300, bbox_in
 
 #---------------Vx SPECTOGRAM------------
 
-freqs_1,times_1, spec_1 = signal.spectrogram(ZVxmaxu,35,window='hanning', nperseg=np.size(ZVxmaxu)/6, noverlap=np.size(ZVxmaxu)/6.04,detrend=False,scaling='spectrum');
-freqs_2,times_2, spec_2 = signal.spectrogram(Vlinesu,35,window='hanning', nperseg=np.size(Vlinesu)/6.00, noverlap=np.size(Vlinesu)/6.04,detrend=False, scaling='spectrum');
-freqs_3,times_3, spec_3 = signal.spectrogram(Vlinesc,35,window='hanning', nperseg=np.size(Vlinesc)/6.00, noverlap=np.size(Vlinesc)/6.04,detrend=False, scaling='spectrum');
-freqs_4,times_4, spec_4 = signal.spectrogram(ZVxmaxu,35,window='hanning', nperseg=np.size(ZVxmaxu)/2.00, noverlap=np.size(ZVxmaxu)/2.01,detrend=False, scaling='spectrum');
-freqs_5,times_5, spec_5 = signal.spectrogram(Vlinesu,35,window='hanning', nperseg=np.size(Vlinesu)/2.00, noverlap=np.size(Vlinesu)/2.01,detrend=False, scaling='spectrum');
-freqs_6,times_6, spec_6 = signal.spectrogram(Vlinesc,35,window='hanning', nperseg=np.size(Vlinesc)/2.00, noverlap=np.size(Vlinesc)/2.01,detrend=False, scaling='spectrum');
+freqs_1,times_1, spec_1 = signal.spectrogram(ZVxmaxu,resX,window='hanning', nperseg=np.size(ZVxmaxu)/6, noverlap=np.size(ZVxmaxu)/6.04,detrend=False,scaling='spectrum');
+freqs_2,times_2, spec_2 = signal.spectrogram(Vlinesu,resX,window='hanning', nperseg=np.size(Vlinesu)/6.00, noverlap=np.size(Vlinesu)/6.04,detrend=False, scaling='spectrum');
+freqs_3,times_3, spec_3 = signal.spectrogram(Vlinesc,resX,window='hanning', nperseg=np.size(Vlinesc)/6.00, noverlap=np.size(Vlinesc)/6.04,detrend=False, scaling='spectrum');
+freqs_4,times_4, spec_4 = signal.spectrogram(ZVxmaxu,resX,window='hanning', nperseg=np.size(ZVxmaxu)/2.00, noverlap=np.size(ZVxmaxu)/2.01,detrend=False, scaling='spectrum');
+freqs_5,times_5, spec_5 = signal.spectrogram(Vlinesu,resX,window='hanning', nperseg=np.size(Vlinesu)/2.00, noverlap=np.size(Vlinesu)/2.01,detrend=False, scaling='spectrum');
+freqs_6,times_6, spec_6 = signal.spectrogram(Vlinesc,resX,window='hanning', nperseg=np.size(Vlinesc)/2.00, noverlap=np.size(Vlinesc)/2.01,detrend=False, scaling='spectrum');
 
 pyplot.figure(7); matplotlib.rcParams.update({'font.size': 12})
 fig = pyplot.figure(figsize=(18,9)); fig.clear()
@@ -290,12 +294,12 @@ pyplot.tight_layout(); fig.subplots_adjust(top=0.88)
 pyplot.savefig('Spectogram_Vx_'+'NTR'+str(NTR)+'_NPR'+str(NPR)+'.png', dpi=300)
 
 #---------------TKE SPECTOGRAM------------
-freqs_upmax,times_upmax, spec_upmax = signal.spectrogram(Zmaxu,35,window='hanning', nperseg=np.size(Zmaxu)/6, noverlap=np.size(Zmaxu)/6.04,detrend=False,scaling='spectrum');
-freqs_lowmax,times_lowmax, spec_lowmax = signal.spectrogram(Zmaxl,35,window='hanning', nperseg=np.size(Zmaxl)/6.00, noverlap=np.size(Zmaxl)/6.04,detrend=False, scaling='spectrum');
-freqs_centre,times_centre, spec_centre = signal.spectrogram(Zlinesc,35,window='hanning', nperseg=np.size(Zlinesc)/6.00, noverlap=np.size(Zlinesc)/6.04,detrend=False, scaling='spectrum');
-freqs_upmaxHR,times_upmaxHR, spec_upmaxHR = signal.spectrogram(Zmaxu,35,window='hanning', nperseg=np.size(Zmaxu)/2.00, noverlap=np.size(Zmaxu)/2.01,detrend=False, scaling='spectrum');
-freqs_lowmaxHR,times_lowmaxHR, spec_lowmaxHR = signal.spectrogram(Zmaxl,35,window='hanning', nperseg=np.size(Zmaxl)/2.00, noverlap=np.size(Zmaxl)/2.01,detrend=False, scaling='spectrum');
-freqs_centreHR,times_centreHR, spec_centreHR = signal.spectrogram(Zlinesc,35,window='hanning', nperseg=np.size(Zlinesc)/2.00, noverlap=np.size(Zlinesc)/2.01,detrend=False, scaling='spectrum');
+freqs_upmax,times_upmax, spec_upmax = signal.spectrogram(Zmaxu,resX,window='hanning', nperseg=np.size(Zmaxu)/6, noverlap=np.size(Zmaxu)/6.04,detrend=False,scaling='spectrum');
+freqs_lowmax,times_lowmax, spec_lowmax = signal.spectrogram(Zmaxl,resX,window='hanning', nperseg=np.size(Zmaxl)/6.00, noverlap=np.size(Zmaxl)/6.04,detrend=False, scaling='spectrum');
+freqs_centre,times_centre, spec_centre = signal.spectrogram(Zlinesc,resX,window='hanning', nperseg=np.size(Zlinesc)/6.00, noverlap=np.size(Zlinesc)/6.04,detrend=False, scaling='spectrum');
+freqs_upmaxHR,times_upmaxHR, spec_upmaxHR = signal.spectrogram(Zmaxu,resX,window='hanning', nperseg=np.size(Zmaxu)/2.00, noverlap=np.size(Zmaxu)/2.01,detrend=False, scaling='spectrum');
+freqs_lowmaxHR,times_lowmaxHR, spec_lowmaxHR = signal.spectrogram(Zmaxl,resX,window='hanning', nperseg=np.size(Zmaxl)/2.00, noverlap=np.size(Zmaxl)/2.01,detrend=False, scaling='spectrum');
+freqs_centreHR,times_centreHR, spec_centreHR = signal.spectrogram(Zlinesc,resX,window='hanning', nperseg=np.size(Zlinesc)/2.00, noverlap=np.size(Zlinesc)/2.01,detrend=False, scaling='spectrum');
 
 pyplot.figure(8); matplotlib.rcParams.update({'font.size': 12})
 fig = pyplot.figure(figsize=(18,9)); fig.clear()
